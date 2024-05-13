@@ -1,0 +1,46 @@
+version: '3.9'
+services:
+  backend:
+    # build docker file
+    build: .
+    ports:
+      - 8000:3000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    networks:
+      - network1
+
+  db:
+    image: mysql:5.7.22
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ambassador
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    volumes:
+      - .dbdata:/var/lib/mysql
+    ports:
+      - 33066:3306
+    networks:
+      - network1
+  
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      - network1
+  
+  # mailhog:
+  #   image: mailhog/mailhog
+  #   ports:
+  #     - 1025:1025
+  #     - 8025:8025
+
+networks:
+  network1:
+    name: sharing
+    external: true
